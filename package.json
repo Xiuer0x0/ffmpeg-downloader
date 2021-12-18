@@ -1,0 +1,25 @@
+{
+  "name": "ffmpeg-downloader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run.js",
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "fluent-ffmpeg": "^2.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node run.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xiuer0x0/ffmpeg-downloader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xiuer0x0/ffmpeg-downloader/issues"
+  },
+  "homepage": "https://github.com/Xiuer0x0/ffmpeg-downloader#readme"
+}
