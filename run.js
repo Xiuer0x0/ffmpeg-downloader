@@ -60,6 +60,14 @@ function updateWindowTitle(label = '') {
 
 updateWindowTitle();
 
+function pressAnyKeyToExit() {
+  console.log('\nPress any key to exit!');
+
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on('data', process.exit.bind(process, 0));
+}
+
 const Ffmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
@@ -100,11 +108,7 @@ const ffmpeg = Ffmpeg(m3u8)
 
     console.log(`${nowDate} - Download done!`);
 
-    console.log('\nPress any key to exit!');
-
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    process.stdin.on('data', process.exit.bind(process, 0));
+    pressAnyKeyToExit();
   })
   .on('error', function (err) {
     const nowDate = getNowDate();
@@ -112,6 +116,8 @@ const ffmpeg = Ffmpeg(m3u8)
     updateWindowTitle('on error');
 
     console.log(`${nowDate} - Error:`, err);
+
+    pressAnyKeyToExit();
   });
 
 ffmpeg.run();
