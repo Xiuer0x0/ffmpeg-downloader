@@ -18,6 +18,14 @@ if (!fs.existsSync(savePathFolder)){
   fs.mkdirSync(savePathFolder, { recursive: true });
 }
 
+function updateWindowTitle(label = '') {
+  const windowTitle = `ffmpeg-downloader - "${fullFileName}" ${label}`;
+
+  process.title = windowTitle;
+}
+
+updateWindowTitle();
+
 const Ffmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
@@ -34,23 +42,35 @@ const ffmpeg = Ffmpeg(m3u8)
   ])
   .output(`${savePathFolder}/${fullFileName}`)
   .on('start', function(commandLine) {
+    updateWindowTitle('downloading');
+
     console.log(`Spawned Ffmpeg with command: ${commandLine}`);
   })
   .on('progress', function (progress) {
     const nowDate = getNowDate();
     const { percent, timemark } = progress;
 
-    const progressPercentString = (percent) ? `, progressing: ${percent.toFixed(3)}% ` : '';
+    const progressPercentString = (percent) ? ` ${percent.toFixed(3)}% ` : '';
     const timemarkString = (timemark) ? `, time: ${timemark}` : '';
+
+    if (percent) {
+      updateWindowTitle(`downloading ${progressPercentString}`);
+    }
 
     console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timemarkString}`);
   })
   .on('end', function () {
     const nowDate = getNowDate();
+
+    updateWindowTitle(`done!`);
+
     console.log(`${nowDate} - Download done!`);
   })
   .on('error', function (err) {
     const nowDate = getNowDate();
+
+    updateWindowTitle('on error');
+
     console.log(`${nowDate} - Error:`, err);
   });
 
