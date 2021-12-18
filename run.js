@@ -65,6 +65,12 @@ const ffmpeg = Ffmpeg(m3u8)
     updateWindowTitle(`done!`);
 
     console.log(`${nowDate} - Download done!`);
+
+    console.log('\nPress any key to exit!');
+
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', process.exit.bind(process, 0));
   })
   .on('error', function (err) {
     const nowDate = getNowDate();
