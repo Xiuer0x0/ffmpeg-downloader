@@ -1,5 +1,5 @@
 const m3u8 = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
-const fileName = `Test-${new Date().valueOf()}`;
+const fullFileName = `Test-${new Date().valueOf()}`;
 
 const savePathFolder = `${process.env.USERPROFILE}/Downloads/ffmpeg-download`;
 
@@ -29,7 +29,7 @@ const ffmpeg = Ffmpeg(m3u8)
     '-c copy',
     '-bsf:a aac_adtstoasc',
   ])
-  .output(`${savePathFolder}/${fileName}.mp4`)
+  .output(`${savePathFolder}/${fullFileName}`)
   .on('start', function(commandLine) {
     console.log(`Spawned Ffmpeg with command: ${commandLine}`);
   })
@@ -40,7 +40,7 @@ const ffmpeg = Ffmpeg(m3u8)
     const progressPercentString = (percent) ? `, progressing: ${percent.toFixed(3)}% ` : '';
     const timemarkString = (timemark) ? `, time: ${timemark}` : '';
 
-    console.log(`${nowDate} - Download "${fileName}"${progressPercentString}${timemarkString}`);
+    console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timemarkString}`);
   })
   .on('end', function () {
     const nowDate = getNowDate();
