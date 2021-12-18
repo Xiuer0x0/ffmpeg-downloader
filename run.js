@@ -18,12 +18,14 @@ if (!fs.existsSync(savePathFolder)){
 }
 
 const Ffmpeg = require('fluent-ffmpeg');
+// ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
 
 const ffmpeg = Ffmpeg(m3u8)
   .setFfmpegPath(ffmpegDrivePath)
-  .inputOption('-headers', 'Origin: {origin}\r\nReferer: {referer}\r\n')
-  .inputOption('-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36')
+  // http headers settings
+  // .inputOption('-headers', 'Origin: {origin}\r\nReferer: {referer}\r\n')
+  // .inputOption('-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36')
   .outputOptions([
     '-protocol_whitelist concat,file,http,https,tcp,tls,crypto',
     '-c copy',
