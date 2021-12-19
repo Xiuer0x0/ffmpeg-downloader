@@ -60,14 +60,6 @@ function updateWindowTitle(label = '') {
 
 updateWindowTitle();
 
-function pressAnyKeyToExit() {
-  console.log('\nPress any key to exit!');
-
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-  process.stdin.on('data', process.exit.bind(process, 0));
-}
-
 const utils = require('./libs/utils');
 const FluentFfmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
@@ -112,7 +104,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
 
     console.log(`${nowDate} - Download done!`);
 
-    pressAnyKeyToExit();
+    utils.pressAnyKeyToExit(process);
   })
   .on('error', function (err) {
     const nowDate = getNowDate();
@@ -121,7 +113,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
 
     console.log(`${nowDate} - Error:`, err);
 
-    pressAnyKeyToExit();
+    utils.pressAnyKeyToExit(process);
   });
 
 ffmpeg.run();

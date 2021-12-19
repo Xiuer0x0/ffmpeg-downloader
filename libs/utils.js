@@ -2,6 +2,20 @@ const dayjs = require('dayjs');
 const { timemarkToSeconds } = require('fluent-ffmpeg/lib/utils');
 
 module.exports = {
+  /**
+   * @param {NodeJS.Process} process
+   */
+  pressAnyKeyToExit(process) {
+    if (process instanceof NodeJS.Process) {
+      return false;
+    }
+
+    console.log('\nPress any key to exit!');
+
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', process.exit.bind(process, 0));
+  },
   getTimeSecond(startTimeString = '00:00:00') {
     const baseDateString = '2000-01-01';
     const baseDate = dayjs(baseDateString).valueOf();
