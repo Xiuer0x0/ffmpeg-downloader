@@ -16,6 +16,16 @@ module.exports = {
     process.stdin.resume();
     process.stdin.on('data', process.exit.bind(process, 0));
   },
+  /**
+   * @param {NodeJS.Process} process
+   * @param {string} fullFileName
+   * @param {string} title
+   */
+  updateWindowTitle(process, fullFileName, label = '') {
+    const windowTitle = `ffmpeg-downloader - "${fullFileName}" ${label}`;
+
+    process.title = windowTitle;
+  },
   getTimeSecond(startTimeString = '00:00:00') {
     const baseDateString = '2000-01-01';
     const baseDate = dayjs(baseDateString).valueOf();

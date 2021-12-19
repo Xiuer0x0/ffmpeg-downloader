@@ -1,3 +1,5 @@
+const utils = require('./libs/utils');
+
 function getProcessArgs() {
   const pressProcessArgs = process.argv.map((value, index) => {
     if (index > 1) {
@@ -52,15 +54,8 @@ if (!fs.existsSync(savePathFolder)){
   fs.mkdirSync(savePathFolder, { recursive: true });
 }
 
-function updateWindowTitle(label = '') {
-  const windowTitle = `ffmpeg-downloader - "${fullFileName}" ${label}`;
+utils.updateWindowTitle(process, fullFileName);
 
-  process.title = windowTitle;
-}
-
-updateWindowTitle();
-
-const utils = require('./libs/utils');
 const FluentFfmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
@@ -79,7 +74,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
   ])
   .output(`${savePathFolder}/${fullFileName}`)
   .on('start', function(commandLine) {
-    updateWindowTitle('downloading');
+    utils.updateWindowTitle(process, fullFileName, 'downloading');
 
     console.log(`Spawned Ffmpeg with command: ${commandLine}`);
   })
@@ -92,7 +87,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
     const timeMarkMessage = `, time: ${timeMarkString}`;
 
     if (percent) {
-      updateWindowTitle(`downloading ${progressPercentString}`);
+      utils.updateWindowTitle(process, fullFileName, `downloading ${progressPercentString}`);
     }
 
     console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timeMarkMessage}`);
@@ -100,7 +95,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
   .on('end', function () {
     const nowDate = getNowDate();
 
-    updateWindowTitle(`done!`);
+    utils.updateWindowTitle(process, fullFileName, `done!`);
 
     console.log(`${nowDate} - Download done!`);
 
@@ -109,7 +104,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
   .on('error', function (err) {
     const nowDate = getNowDate();
 
-    updateWindowTitle('on error');
+    utils.updateWindowTitle(process, fullFileName, 'on error');
 
     console.log(`${nowDate} - Error:`, err);
 
