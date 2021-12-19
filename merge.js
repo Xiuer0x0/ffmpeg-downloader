@@ -51,7 +51,6 @@ ffmpeg
     utils.pressAnyKeyToExit(process);
   });
 
-const mergeFileName = `merge-${fileList[0]}`;
 const mergeFolder = `${folder}/merge`;
 
 const fs = require('fs');
@@ -60,5 +59,6 @@ if (!fs.existsSync(mergeFolder)){
   fs.mkdirSync(mergeFolder, { recursive: true });
 }
 
-ffmpeg.output(`${mergeFolder}/${fullFileName}`);
-ffmpeg.mergeToFile(mergeFileName, mergeFolder);
+const mergeFullFilePath = `${mergeFolder}/${fullFileName}`;
+
+ffmpeg.mergeToFile(mergeFullFilePath, mergeFolder);
