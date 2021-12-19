@@ -1,30 +1,10 @@
 const utils = require('./libs/utils');
 
-function getProcessArgs() {
-  const pressProcessArgs = process.argv.map((value, index) => {
-    if (index > 1) {
-      const [key, str] = value.split('=');
-
-      return [key, str];
-    }
-  });
-
-  const filterProcessArgs = pressProcessArgs.filter((value) => {
-    if (value) {
-      return true;
-    }
-  });
-
-  const processData = Object.fromEntries(filterProcessArgs);
-
-  return processData;
-}
-
 // test file
 // const m3u8 = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
 // const fullFileName = `Test-${new Date().valueOf()}.mp4`;
 
-const { m3u8, fullFileName, startTime: startTimeString } = getProcessArgs();
+const { m3u8, fullFileName, startTime: startTimeString } = utils.getProcessArgs();
 
 if (!m3u8) {
   console.log('need "m3u8" URL source');

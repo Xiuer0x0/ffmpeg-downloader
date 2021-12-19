@@ -26,6 +26,29 @@ module.exports = {
 
     process.title = windowTitle;
   },
+  /**
+   * @param {NodeJS.Process} process
+   * @returns 
+   */
+  getProcessArgs(process) {
+    const pressProcessArgs = process.argv.map((value, index) => {
+      if (index > 1) {
+        const [key, str] = value.split('=');
+  
+        return [key, str];
+      }
+    });
+  
+    const filterProcessArgs = pressProcessArgs.filter((value) => {
+      if (value) {
+        return true;
+      }
+    });
+  
+    const processData = Object.fromEntries(filterProcessArgs);
+  
+    return processData;
+  },
   getTimeSecond(startTimeString = '00:00:00') {
     const baseDateString = '2000-01-01';
     const baseDate = dayjs(baseDateString).valueOf();
