@@ -20,14 +20,6 @@ if (!fullFileName) {
 
 const savePathFolder = `${process.env.USERPROFILE}/Downloads/ffmpeg-download`;
 
-const dayjs = require('dayjs');
-
-function getNowDate() {
-  const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
-
-  return date;
-}
-
 const fs = require('fs');
 
 if (!fs.existsSync(savePathFolder)){
@@ -59,7 +51,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
     console.log(`Spawned Ffmpeg with command: ${commandLine}`);
   })
   .on('progress', function (progress) {
-    const nowDate = getNowDate();
+    const nowDate = utils.getNowDate();
     const { percent, timemark } = progress;
 
     const progressPercentString = (percent) ? ` ${percent.toFixed(3)}% ` : '';
@@ -73,7 +65,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
     console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timeMarkMessage}`);
   })
   .on('end', function () {
-    const nowDate = getNowDate();
+    const nowDate = utils.getNowDate();
 
     utils.updateWindowTitle(process, fullFileName, `done!`);
 
@@ -82,7 +74,7 @@ const ffmpeg = FluentFfmpeg(m3u8)
     utils.pressAnyKeyToExit(process);
   })
   .on('error', function (err) {
-    const nowDate = getNowDate();
+    const nowDate = utils.getNowDate();
 
     utils.updateWindowTitle(process, fullFileName, 'on error');
 

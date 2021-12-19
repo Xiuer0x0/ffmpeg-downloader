@@ -67,4 +67,9 @@ module.exports = {
 
     return realTimeMarkString;
   },
+  getNowDate() {
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
+    return date;
+  },
 };
