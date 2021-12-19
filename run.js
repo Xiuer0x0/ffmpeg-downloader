@@ -22,7 +22,7 @@ function getProcessArgs() {
 // const m3u8 = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
 // const fullFileName = `Test-${new Date().valueOf()}.mp4`;
 
-const { m3u8, fullFileName } = getProcessArgs();
+const { m3u8, fullFileName, startTime: startTimeString } = getProcessArgs();
 
 if (!m3u8) {
   console.log('need "m3u8" URL source');
@@ -68,12 +68,15 @@ function pressAnyKeyToExit() {
   process.stdin.on('data', process.exit.bind(process, 0));
 }
 
+const utils = require('./libs/utils');
 const Ffmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
+const startTimeSecond = utils.getTimeSecond(startTimeString);
 
 const ffmpeg = Ffmpeg(m3u8)
   .setFfmpegPath(ffmpegDrivePath)
+  .setStartTime(startTimeSecond)
   // http headers settings
   // .inputOption('-headers', 'Origin: {origin}\r\nReferer: {referer}\r\n')
   // .inputOption('-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36')
@@ -93,13 +96,14 @@ const ffmpeg = Ffmpeg(m3u8)
     const { percent, timemark } = progress;
 
     const progressPercentString = (percent) ? ` ${percent.toFixed(3)}% ` : '';
-    const timemarkString = (timemark) ? `, time: ${timemark}` : '';
+    const timeMarkString = utils.getTimeMark(timemark, startTimeSecond);
+    const timeMarkMessage = `, time: ${timeMarkString}`;
 
     if (percent) {
       updateWindowTitle(`downloading ${progressPercentString}`);
     }
 
-    console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timemarkString}`);
+    console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timeMarkMessage}`);
   })
   .on('end', function () {
     const nowDate = getNowDate();
