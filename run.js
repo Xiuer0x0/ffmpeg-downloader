@@ -69,12 +69,12 @@ function pressAnyKeyToExit() {
 }
 
 const utils = require('./libs/utils');
-const Ffmpeg = require('fluent-ffmpeg');
+const FluentFfmpeg = require('fluent-ffmpeg');
 // ffmpeg.exe path
 const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
 const startTimeSecond = utils.getTimeSecond(startTimeString);
 
-const ffmpeg = Ffmpeg(m3u8)
+const ffmpeg = FluentFfmpeg(m3u8)
   .setFfmpegPath(ffmpegDrivePath)
   .setStartTime(startTimeSecond)
   // http headers settings
