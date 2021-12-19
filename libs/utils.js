@@ -6,10 +6,6 @@ module.exports = {
    * @param {NodeJS.Process} process
    */
   pressAnyKeyToExit(process) {
-    if (process instanceof NodeJS.Process) {
-      return false;
-    }
-
     console.log('\nPress any key to exit!');
 
     process.stdin.setRawMode(true);
