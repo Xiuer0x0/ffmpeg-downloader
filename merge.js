@@ -1,22 +1,41 @@
+const config = require('./config');
+const mergeConfig = require('./merge.config');
 const utils = require('./libs/utils');
+const fs = require('fs');
 const FluentFfmpeg = require('fluent-ffmpeg');
-// ffmpeg.exe path
-const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
 
-const folder = `${process.env.USERPROFILE}/Downloads/ffmpeg-download`;
-const fileList = [
-  'File.mp4',
-  'File_2.mp4',
-];
-const fullFileName = fileList[0];
+const { ffmpegDrivePath } = config;
+const { mergeOptions } = mergeConfig;
+
+const folderPath = mergeOptions.folderPath || `${process.env.USERPROFILE}/Downloads/ffmpeg-merge`;
+const { fileList } = mergeOptions;
+
+if (!fileList.length) {
+  console.warn('no file list');
+
+  process.exit();
+}
+
+const [fullFileName] = fileList;
 
 const ffmpeg = FluentFfmpeg();
 
-fileList.forEach((fullFileName) => {
-  const fullFilePath = `${folder}/${fullFileName}`;
+try {
+  fileList.forEach((fullFileName) => {
+    const fullFilePath = `${folderPath}/${fullFileName}`;
+  
+    if (!fs.existsSync(fullFilePath)) {
 
-  ffmpeg.addInput(fullFilePath);
-});
+      throw new Error(fullFilePath);
+    }
+
+    ffmpeg.addInput(fullFilePath);
+  });
+} catch (errorFilePath) {
+  console.warn(`not found file "${errorFilePath}"`);
+
+  process.exit();
+}
 
 ffmpeg
   .setFfmpegPath(ffmpegDrivePath)
@@ -51,9 +70,8 @@ ffmpeg
     utils.pressAnyKeyToExit(process);
   });
 
-const mergeFolder = `${folder}/merge`;
-
-const fs = require('fs');
+const { saveFolderPath } = mergeOptions;
+const mergeFolder = saveFolderPath || `${folderPath}/merge`;
 
 if (!fs.existsSync(mergeFolder)){
   fs.mkdirSync(mergeFolder, { recursive: true });
