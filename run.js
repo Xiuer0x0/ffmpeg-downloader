@@ -1,52 +1,41 @@
+const config = require('./config');
 const utils = require('./libs/utils');
 
-// test file
-// const m3u8 = 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
-// const fullFileName = `Test-${new Date().valueOf()}.mp4`;
+const { downloadOptions } = config;
+const { m3u8URL, startTime: startTimeString, } = downloadOptions;
 
-const { m3u8, fullFileName, startTime: startTimeString } = utils.getProcessArgs(process);
+const saveFileName = downloadOptions.saveFileName || `m3u8-downloader-${new Date().valueOf()}`;
+const saveFolderPath = downloadOptions.saveFolderPath || `${process.env.USERPROFILE}/Downloads/ffmpeg-download`;
 
-if (!m3u8) {
+if (!m3u8URL) {
   console.log('need "m3u8" URL source');
 
   process.exit();
 }
 
-if (!fullFileName) {
-  console.log('need "fullFileName"');
-
-  process.exit();
-}
-
-const savePathFolder = `${process.env.USERPROFILE}/Downloads/ffmpeg-download`;
-
 const fs = require('fs');
 
-if (!fs.existsSync(savePathFolder)){
-  fs.mkdirSync(savePathFolder, { recursive: true });
+if (!fs.existsSync(saveFolderPath)){
+  fs.mkdirSync(saveFolderPath, { recursive: true });
 }
 
-utils.updateWindowTitle(process, fullFileName);
+utils.updateWindowTitle(process, saveFileName);
 
 const FluentFfmpeg = require('fluent-ffmpeg');
-// ffmpeg.exe path
-const ffmpegDrivePath = 'C:/FreeSoftware/ffmpeg-N-104348-gbb10f8d802-win64-gpl/bin/ffmpeg';
+const { ffmpegDrivePath } = config;
 const startTimeSecond = utils.getTimeSecond(startTimeString);
 
-const ffmpeg = FluentFfmpeg(m3u8)
+const ffmpeg = FluentFfmpeg(m3u8URL)
   .setFfmpegPath(ffmpegDrivePath)
   .setStartTime(startTimeSecond)
-  // http headers settings
-  // .inputOption('-headers', 'Origin: {origin}\r\nReferer: {referer}\r\n')
-  // .inputOption('-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36')
   .outputOptions([
     '-protocol_whitelist concat,file,http,https,tcp,tls,crypto',
     '-c copy',
     '-bsf:a aac_adtstoasc',
   ])
-  .output(`${savePathFolder}/${fullFileName}`)
+  .output(`${saveFolderPath}/${saveFileName}`)
   .on('start', function(commandLine) {
-    utils.updateWindowTitle(process, fullFileName, 'downloading');
+    utils.updateWindowTitle(process, saveFileName, 'downloading');
 
     console.log(`Spawned Ffmpeg with command: ${commandLine}`);
   })
@@ -59,15 +48,15 @@ const ffmpeg = FluentFfmpeg(m3u8)
     const timeMarkMessage = `, time: ${timeMarkString}`;
 
     if (percent) {
-      utils.updateWindowTitle(process, fullFileName, `downloading ${progressPercentString}`);
+      utils.updateWindowTitle(process, saveFileName, `downloading ${progressPercentString}`);
     }
 
-    console.log(`${nowDate} - Download "${fullFileName}"${progressPercentString}${timeMarkMessage}`);
+    console.log(`${nowDate} - Download "${saveFileName}"${progressPercentString}${timeMarkMessage}`);
   })
   .on('end', function () {
     const nowDate = utils.getNowDate();
 
-    utils.updateWindowTitle(process, fullFileName, `done!`);
+    utils.updateWindowTitle(process, saveFileName, `done!`);
 
     console.log(`${nowDate} - Download done!`);
 
@@ -76,11 +65,21 @@ const ffmpeg = FluentFfmpeg(m3u8)
   .on('error', function (err) {
     const nowDate = utils.getNowDate();
 
-    utils.updateWindowTitle(process, fullFileName, 'on error');
+    utils.updateWindowTitle(process, saveFileName, 'on error');
 
     console.log(`${nowDate} - Error:`, err);
 
     utils.pressAnyKeyToExit(process);
   });
+
+const { httpOptions } = config;
+
+if (httpOptions.headers) {
+  ffmpeg.inputOption('-headers', httpOptions.headers);
+}
+
+if (httpOptions.userAgent) {
+  ffmpeg.inputOption('-user_agent', httpOptions.userAgent);
+}
 
 ffmpeg.run();
