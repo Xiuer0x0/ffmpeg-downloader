@@ -1,7 +1,8 @@
 const config = require('./config');
+const downloaderConfig = require('./downloader.config');
 const utils = require('./libs/utils');
 
-const { downloadOptions } = config;
+const { downloadOptions } = downloaderConfig;
 const { m3u8URL, startTime: startTimeString, } = downloadOptions;
 
 const saveFileName = downloadOptions.saveFileName || `m3u8-downloader-${new Date().valueOf()}`;
@@ -72,7 +73,7 @@ const ffmpeg = FluentFfmpeg(m3u8URL)
     utils.pressAnyKeyToExit(process);
   });
 
-const { httpOptions } = config;
+const { httpOptions } = downloaderConfig;
 
 if (httpOptions.headers) {
   ffmpeg.inputOption('-headers', httpOptions.headers);
