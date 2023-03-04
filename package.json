@@ -5,7 +5,11 @@
   "main": "run.js",
   "dependencies": {
     "dayjs": "^1.10.7",
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "m3u8_to_mpegts": "^1.0.1",
+    "minimist": "^1.2.8",
+    "node-hls-downloader": "^2.0.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {},
   "scripts": {
